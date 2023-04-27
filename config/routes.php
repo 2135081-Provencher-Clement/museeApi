@@ -9,8 +9,11 @@ return function (App $app) {
     // Documentation de l'api
     $app->get('/docs', \App\Action\Docs\SwaggerUiAction::class);
 
-    // Films
-    $app->get('/film', \App\Action\Film\FilmViewAction::class);
-
+    // Oeuvres
+    $app->get('/oeuvres', \App\Action\Oeuvre\OeuvreViewAllAction::class);
+    $app->get('/oeuvre', \App\Action\Oeuvre\OeuvreViewAction::class);
+    $app->put('/oeuvre', \App\Action\Oeuvre\OeuvreCreateAction::class);
+    $app->post('/oeuvre/{id}', \App\Action\Oeuvre\OeuvreUpdateAction::class);
+    $app->delete('/oeuvre/{id}', \App\Action\Oeuvre\OeuvreDeleteAction::class);
 };
 
