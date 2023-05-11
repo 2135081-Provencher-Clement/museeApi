@@ -62,6 +62,12 @@ class CleRepository
         return ($query->rowCount() > 0);
     }
 
+    /**
+     * Indique le mot de passe d'un usager
+     *
+     * @param string $username le nom d'usager
+     * @return mixed|string le mot de passe hashé
+     */
     public function GetPasswordOfUser(string $username) {
 
         $sql = "SELECT password FROM usager WHERE username = :username;";
@@ -75,6 +81,13 @@ class CleRepository
         return $resultat[0]['password'] ?? "";
     }
 
+    /**
+     * Change la clé d'api d'un usager
+     *
+     * @param string $username le nom d'utilisateur
+     * @param string $cle la clé d'api
+     * @return bool si le changement à été réussi
+     */
     public function InsertNewKeyForUser(string $username, string $cle) {
 
         $sql = "UPDATE usager

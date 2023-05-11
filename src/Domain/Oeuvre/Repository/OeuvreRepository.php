@@ -122,7 +122,7 @@ class OeuvreRepository
         $params = [
             "id" => $id,
             "titre" => $data['titre'] ?? "",
-            "urlImage" => $data['urlImage'] ?? "placeholder"
+            "urlImage" => $data['urlImage'] ?? "placeholder.jpg"
         ];
 
         $query = $this->connection->prepare($sql);

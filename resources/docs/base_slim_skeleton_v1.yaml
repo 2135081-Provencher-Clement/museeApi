@@ -1,40 +1,39 @@
 openapi: 3.0.0
 info:
   version: 1.0.0
-  title: Base-Slim-Skeleton
-  description: Structure de base d'un api créé dans le cadre du cours Services Web H2023
-  
-servers: 
-  - url: http://localhost/base-slim-skeleton
+  title: API Musée - Clément Provencher
+  description: Api qui affiche des oeuvres d'art, examen final de services web
+
+servers:
+  - url: http://museeApi.dvl.to/docs
 paths:
   /:
     get:
       tags:
         - Général
       summary: Message de bienvenue
+      security:
+        - ApiKeyAuth: [ ]
       responses:
-        '200': 
-          description: 
+        '200':
+          description: Message de bienvenue
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  success:
-                    type: boolean
                   message:
                     type: string
                 example:
-                    success: true
-                    message : 'Hello world!'
-  
-  /users:
-    post:
-      tags: 
-        - Usagers
-      summary: Création d'un usager.
+                  success: true
+                  message: "Api de musée, contient diverses oeuvres"
+  /cle:
+    put:
+      tags:
+        - Clée d'api
+      summary: Génère une nouvelle clée d'api pour un utilisateur fourni
       requestBody:
-        description: Les informations de l'usager à créer
+        description: le nom d'utilisateur et le mot de passe
         required: true
         content:
           application/json:
@@ -43,27 +42,281 @@ paths:
               properties:
                 username:
                   type: string
-                first_name:
-                  type: string
-                last_name:
-                  type: string
-                email:
+                password:
                   type: string
               example:
-                username : 'mathF'
-                first_name: 'Mathieu'
-                last_name: 'Fréchette'
-                email: 'frechette.mathieu@cegepvicto.ca'
+                username: "utilisateur"
+                password: "jeSuisUnCochon"
       responses:
-        '201': 
-          description: Le id de l'usager créé
+        '200':
+          description: Retourne la nouvelle clée d'api
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  user_id:
-                    type: integer
+                  cle:
+                    type: string
+
                 example:
-                  id : 1
-  
+                  cle: '1234567'
+
+        '401':
+          description: Retourne un message d'erreur si l'utilisateur et le mot de passe ne corresponde pas dans la base de données
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erreur:
+                    type: string
+
+                example:
+                  erreur: "l'usager n'existe pas"
+
+        '500':
+          description: Retourne un message d'erreur si la modification de la base de données à échoué
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  erreur:
+                    type: string
+
+                example:
+                  erreur: "la clé n'a pu être enregistrée dans la base de données"
+
+  /oeuvre:
+    get:
+      tags:
+        - Oeuvre
+      summary: Retourne un oeuvre au hasard
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        '200':
+          description: Un oeuvre au hasard
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  oeuvres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        titre:
+                          type: string
+                        urlImage:
+                          type: string
+                example:
+                  oeuvre: [
+                    {
+                      id: 12,
+                      titre: "Harbinger",
+                      urlImage: "placeholder.jpg"
+                    }
+                  ]
+    post:
+      tags:
+        - Oeuvre
+      summary: Ajoute une oeuvre
+      security:
+        - ApiKeyAuth: [ ]
+      requestBody:
+        description: Le nom de l'oeuvre à ajouter
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titre:
+                  type: string
+              example:
+                titre: "Harbinger"
+      responses:
+        '201':
+          description: L'oeuvre ajoutée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  titre:
+                    type: string
+                  urlImage:
+                    type: string
+                example:
+                  {
+                    id: 12,
+                    titre: "Harbinger",
+                    urlImage: "placeholder.jpg"
+                  }
+
+  /oeuvres:
+    get:
+      tags:
+        - Oeuvre
+      summary: Retourne la liste des oeuvres
+      security:
+        - ApiKeyAuth: [ ]
+      responses:
+        '200':
+          description: Tous les oeuvres
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  oeuvres:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        titre:
+                          type: string
+                        urlImage:
+                          type: string
+                example:
+                  oeuvres:
+                    [
+                      {
+                        id: 12,
+                        titre: "Harbinger",
+                        urlImage: "placeholder.jpg"
+                      },
+                      {
+                        id: 13,
+                        titre: "Dance",
+                        urlImage: "placeholder.jpg"
+                      }
+                    ]
+
+  /oeuvre/{id}:
+    put:
+      tags:
+        - Oeuvre
+      summary: Modification d'un oeuvre
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: L'id' de l'oeuvre que l'on veut modifier
+          schema:
+            type: integer
+            example: 12
+      requestBody:
+        description: Le nouveau titre de l'oeuvre
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                titre:
+                  type: string
+              example:
+                titre: "Harbinger"
+      responses:
+        '201':
+          description: L'oeuvre ajoutée (Ajoutée si n'existe pas)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  titre:
+                    type: string
+                  urlImage:
+                    type: string
+                example:
+                  {
+                    id: 12,
+                    titre: "Harbinger",
+                    urlImage: "placeholder.jpg"
+                  }
+        '200':
+          description: L'oeuvre modifiée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  titre:
+                    type: string
+                  urlImage:
+                    type: string
+                example:
+                  {
+                    id: 12,
+                    titre: "Harbinger",
+                    urlImage: "placeholder.jpg"
+                  }
+
+    delete:
+      tags:
+        - Oeuvre
+      summary: Supprime l'oeuvre désiré
+      security:
+        - ApiKeyAuth: [ ]
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: L'id de l'oeuvre à supprimer
+          schema:
+            type: integer
+            example: "14"
+      responses:
+        '200':
+          description: L'oeuvre à été supprimée
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  titre:
+                    type: string
+                  urlImage:
+                    type: string
+                example:
+                  {
+                    id: 12,
+                    titre: "Harbinger",
+                    urlImage: "placeholder.jpg"
+                  }
+
+        '404':
+          description: L'oeuvre n'existe pas
+          content:
+            application/json:
+              schema:
+                type: object
+
+                example:
+                  {
+                  }
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY

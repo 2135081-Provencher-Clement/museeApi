@@ -30,12 +30,14 @@ final class CleGetAction
 
             $nouvelleCle = '';
 
+            // Créé une nouvelle clé de 7 chiffres aléatoires
             for($i = 0; $i < 7; $i++) {
                 $nouvelleCle .= mt_rand(0, 9);
             }
 
             $cleInseree = $this->cleGet->InsertNewKeyToUser($data['username'], $nouvelleCle);
 
+            // Le changement à réussi, on retourne la clé
             if ($cleInseree) {
 
                 $response->getBody()->write((string)json_encode(["cle" => $nouvelleCle]));

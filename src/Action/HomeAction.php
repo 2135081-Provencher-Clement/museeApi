@@ -15,14 +15,14 @@ final class HomeAction
     private $logger;
 
     public function __invoke(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
-        
+
         $result = json_encode([
-            'message' => 'Services Web H2023 - Exercice 04'
+            'message' => 'Api de musée, contient diverses oeuvres'
         ]);
-        
+
         $response->getBody()->write($result);
 
         return $response->withHeader('Content-Type', 'application/json');

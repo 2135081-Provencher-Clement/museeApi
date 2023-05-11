@@ -24,6 +24,13 @@ final class CleGet
         $this->repository = $repository;
     }
 
+    /**
+     * Vérifie si l'utilisateur existe
+     *
+     * @param string $username le nom d'utilisateur
+     * @param string $password le mot de passe
+     * @return bool si l'utilisateur existe
+     */
     public function UserVerify(string $username, string $password) {
 
         $vraiMotDePasse = $this->repository->GetPasswordOfUser($username);
@@ -31,6 +38,13 @@ final class CleGet
         return password_verify($password, $vraiMotDePasse);
     }
 
+    /**
+     * Change la clé d'api d'un utilisateur
+     *
+     * @param string $username le nom d'utilisateur
+     * @param string $key la nouvelle clé d'api
+     * @return bool si le changement à été réussi
+     */
     public function InsertNewKeyToUser(string $username, string $key) {
 
         return $this->repository->InsertNewKeyForUser($username, $key);
