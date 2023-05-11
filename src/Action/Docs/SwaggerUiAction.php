@@ -29,11 +29,11 @@ final class SwaggerUiAction
      * @return ResponseInterface The response
      */
     public function __invoke(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
         // Path to the yaml file
-        $yamlFile = __DIR__ . '/../../../resources/docs/base_slim_skeleton_v1.yaml';
+        $yamlFile = __DIR__ . '/../../../resources/docs/documentation.yaml';
 
         $viewData = [
             'spec' =>json_encode(Yaml::parseFile($yamlFile)),
